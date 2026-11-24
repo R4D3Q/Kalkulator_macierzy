@@ -1,7 +1,18 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11
 
-TARGET = Kalkulator_macierzy
+# Wykrywanie systemu operacyjnego
+ifeq ($(OS),Windows_NT)
+	TARGET = Kalkulator_macierzy.exe
+	RM = del /Q /F
+	# Zamiana ukośników na wypadek podfolderów w przyszłości
+	CLEAN_FILES = $(subst /,\,$(OBJS)) $(TARGET)
+else
+	TARGET = Kalkulator_macierzy
+	RM = rm -f
+	CLEAN_FILES = $(OBJS) $(TARGET)
+endif
+
 SRCS = main.c common.c matrix.c matrix_io.c
 OBJS = $(SRCS:.c=.o)
 
@@ -19,4 +30,4 @@ matrix_io.o: matrix_io.c matrix_io.h matrix.h common.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	$(RM) $(CLEAN_FILES)
